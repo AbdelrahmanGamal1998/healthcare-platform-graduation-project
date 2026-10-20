@@ -1,0 +1,16 @@
+#basic-nav-dropdown
+{
+    list-style: none !important;
+    text-decoration: none !important;
+    color:white !important;
+    padding:0 !important;
+}
+
+#basic-nav-dropdown::after
+{
+    display: none; 
+}
+.signDrop
+{
+    color:rgba(36, 34, 34, 0.705) !important; 
+}

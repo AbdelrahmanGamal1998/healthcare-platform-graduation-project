@@ -1,0 +1,274 @@
+
+<style>
+
+:root {
+	--card-height: 40vw;
+	--card-margin: 4vw;
+	--card-top-offset: 1em;
+	--numcards: 4;
+	--outline-width: 0px;
+}
+
+#cards {
+	padding-bottom: calc(var(--numcards) * var(--card-top-offset)); /* Make place at bottom, as items will slide to that position*/
+	margin-bottom: var(--card-margin); /* Don't include the --card-margin in padding, as that will affect the scroll-timeline*/
+}
+
+#card_1 {
+	--index: 1;
+}
+
+#card_2 {
+	--index: 2;
+}
+
+#card_3 {
+	--index: 3;
+}
+
+#card_4 {
+	--index: 4;
+}
+
+.card {
+	position: sticky;
+	top: 0;
+	padding-top: calc(var(--index) * var(--card-top-offset));
+}
+
+@supports (animation-timeline: works) {
+
+	@scroll-timeline cards-element-scrolls-in-body {
+		source: selector(body);
+		scroll-offsets:
+			/* Start when the start edge touches the top of the scrollport */
+			selector(#cards) start 1,
+			/* End when the start edge touches the start of the scrollport */
+			selector(#cards) start 0
+		;
+		start: selector(#cards) start 1; /* Start when the start edge touches the top of the scrollport */
+		end: selector(#cards) start 0; /* End when the start edge touches the start of the scrollport */
+		time-range: 4s;
+	}
+
+	.card {
+		--index0: calc(var(--index) - 1); /* 0-based index */
+		--reverse-index: calc(var(--numcards) - var(--index0)); /* reverse index */
+		--reverse-index0: calc(var(--reverse-index) - 1); /* 0-based reverse index */
+	}
+	
+	.card__content {
+		transform-origin: 50% 0%;
+		will-change: transform;
+
+		--duration: calc(var(--reverse-index0) * 1s);
+		--delay: calc(var(--index0) * 1s);
+
+		animation: var(--duration) linear scale var(--delay) forwards;
+		animation-timeline: cards-element-scrolls-in-body;
+	}
+
+	@keyframes scale {
+		to {
+			transform:
+				scale(calc(
+					1.1
+					-
+					calc(0.1 * var(--reverse-index))
+				));
+		}
+	}
+}
+
+/** DEBUG **/
+
+#debug {
+  position: fixed;
+  top: 1em;
+  left: 1em;
+}
+#debug::after {
+  content: " Show Debug";
+  margin-left: 1.5em;
+  color: white;
+  white-space: nowrap;
+}
+
+#debug:checked ~ main {
+  --outline-width: 1px;
+}
+
+
+/** PAGE STYLING **/
+
+* { /* Poor Man's Reset */
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	background: #6FBEC3;
+	color: rgb(255, 255, 255);
+	text-align: center;
+
+	font-size: calc(1em + 0.5vw);
+}
+
+header,
+main {
+	width: 80vw;
+	margin: 0 auto;
+}
+
+header {
+	height: 100vh;
+	display: grid;
+	place-items: center;
+}
+
+#cards {
+	list-style: none;
+	outline: calc(var(--outline-width) * 10) solid blue;
+	
+	display: grid;
+	grid-template-columns: 1fr;
+	grid-template-rows: repeat(var(--numcards), var(--card-height));
+	gap: var(--card-margin);
+}
+
+.card {
+	outline: var(--outline-width) solid hotpink;
+}
+
+.card__content {
+	box-shadow: 0 0.2em 1em rgba(0, 0, 0, 0.1), 0 1em 2em rgba(0, 0, 0, 0.1);
+	background: rgb(255, 255, 255);
+	color: rgb(10, 5, 7);
+	border-radius: 1em;
+	overflow: hidden;
+
+	display: grid;
+	grid-template-areas: "text img";
+	grid-template-columns: 1fr 1fr;
+	grid-template-rows: auto;
+
+	align-items: stretch;
+	outline: var(--outline-width) solid lime;
+}
+
+.card__content > div {
+	grid-area: text;
+	width: 80%;
+	place-self: center;
+	text-align: left;
+
+	display: grid;
+	gap: 1em;
+	place-items: start;
+}
+
+.card__content > figure {
+	grid-area: img;
+	overflow: hidden;
+}
+
+.card__content > figure > img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+h1 {
+	font-weight: 300;
+	font-size: 3.5em;
+}
+
+h2 {
+	font-weight: 300;
+	font-size: 2.5em;
+}
+
+p {
+	font-family: sans-serif;
+	font-weight: 300;
+	line-height: 1.42;
+}
+
+.btn {
+	background: rgb(188 87 36);
+	color: rgb(255 255 255);
+	text-decoration: none;
+	display: inline-block;
+	padding: 0.5em;
+	border-radius: 0.25em;
+}
+
+aside {
+	width: 50vw;
+	margin: 0 auto;
+	text-align: left;
+}
+
+aside p {
+	margin-bottom: 1em;
+}
+</style>
+
+
+
+<header>
+   
+	<div>
+		<h1>Health Care</h1>
+		<p>👇 Health Care Payment System </p>
+	</div>
+</header>
+<main>
+	<ul id="cards">
+		<li class="card" id="card_1">
+			<div class="card__content">
+				<div>
+					<h2>Health Care Payment System  </h2>
+					<p>Please Enter your card Info To Pay For your Online consultation  </p>
+                    <form action="payment" method="POST">
+                        <script src="//checkout.stripe.com/v2/checkout.js" class="stripe-button" data-key="<%= key %>"
+                            data-amount="20000" data-currency="EGP" data-name="Health Care Payment"
+                            data-description="Pay for your online Reservation here " data-locale="auto">
+                            </script>
+                    </form>
+				</div>
+				<figure>
+					<img src="https://images.pexels.com/photos/7195445/pexels-photo-7195445.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="Image description">
+				</figure>
+			</div>
+		</li>
+	
+	
+		<li class="card" id="card_4">
+			<div class="card__content">
+				<div>
+					<h2>Health Care Payment System</h2>
+					<p>Please Enter your card Info To Pay For your Online consultation</p>
+                    <form action="payment" method="POST">
+                        <script src="//checkout.stripe.com/v2/checkout.js" class="stripe-button" data-key="<%= key %>"
+                            data-amount="20000" data-currency="EGP" data-name="patientname"
+                            data-description="Pay for your online Reservation here " data-locale="auto">
+                            </script>
+                    </form>
+				</div>
+				<figure>
+					<img src="https://t3.ftcdn.net/jpg/03/61/97/84/240_F_361978491_gH2ePboKh7jolNp2LH09NqV7I5CmDuwj.jpg" alt="Image description">
+				</figure>
+			</div>
+		</li>
+	</ul>
+</main>
+<aside>
+	<p>HealthCare.com is the leading digital healthcare booking platform and practice management software in MENA. We are pioneering the shift to automated physician, clinic and hospital bookings making healthcare easily accessible in the region.
+
+With over 200,000 verified reviews, patients are able to search, compare, and book the best doctors in just 1 minute. Doctors also provide Patients with seamless healthcare experiences through our clinic management software.
+
+We operate in Egypt, KSA, Jordan, Lebanon, Kenya and Nigeria. We strive to lead every aspect of the healthcare industry and continue to launch products that have positive impact on people’s lives.
+</p>
+</aside>

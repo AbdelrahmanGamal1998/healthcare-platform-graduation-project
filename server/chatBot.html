@@ -1,0 +1,134 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>ChatBot</title>
+  <style>
+    * {
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font: 19px Helvetica, Arial;
+      height:100vh;
+      width: 100%;
+      overflow: hidden;
+      display: flex;
+      justify-content:center;
+      align-items: center;
+      background: #1f4037;
+  background: -webkit-linear-gradient(to right, #1f4037, #99f2c8);
+  background: linear-gradient(to right, #1f4037, #99f2c8); 
+
+    }
+
+    .chat-container
+    {
+      width: 800px;
+      height: 600px;
+      box-shadow: 4px 4px 4px rgba(0,0,0,0.2);
+      background-color: white;
+      border-radius:0.5rem;
+      position: relative;
+      overflow-y: scroll;
+    }
+
+    #f {
+    
+      position: fixed;
+      bottom:9%;
+      width: 800px;
+      box-shadow: 4px 4px 4px rgba(0,0,0,0.8);
+     
+    }
+
+    #f input {
+      
+      width: 80%;
+      font-size: 120%;
+    }
+
+    #f button {
+      background:#24473C;
+      color: white;
+      margin-right: 0;
+      width: 20%;
+      font-size: 120%;
+    }
+
+    #messages {
+      list-style-type: none;
+      padding: 0;
+      padding-bottom: 3%;
+    }
+
+    #messages li {
+      padding: 5px 10px;
+      background:rgba(139, 222, 184,0.6);
+      margin:1rem 0rem;
+    }
+
+    #messages li:nth-child(odd) {
+      background: rgba(36, 70, 60,0.2);
+      text-align: right;
+      
+    }
+
+    a:link {
+      color: red;
+    }
+
+    /* visited link */
+    a:visited {
+      color: green;
+    }
+
+    /* mouse over link */
+    a:hover {
+      color: hotpink;
+    }
+
+    /* selected link */
+    a:active {
+      color: blue;
+    }
+  </style>
+
+</head>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+<script>
+  $(function () {
+    var socket = io();
+    $('form').submit(function (e) {
+      e.preventDefault(); // prevents page reloading
+      socket.emit('chat message', $('#m').val());
+      $('#m').val('');
+      return false;
+    });
+    socket.on('chat message', function (msg) {
+      $('#messages').append($('<li>' + msg + '</li>'));
+    });
+
+  });
+</script>
+
+
+<body>
+
+  <div class="chat-container">
+
+  <ul id="messages">
+    <li>Hello, I'm Yummi</li>
+  </ul>
+  
+  <form action="" id="f">
+    <input placeholder="text here" id="m" autocomplete="off" /><button type="submit">Send</button>
+  </form>
+
+</div>
+</body>
+
+</html>
